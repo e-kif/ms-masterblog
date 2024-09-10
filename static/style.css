@@ -25,3 +25,36 @@ h1 {
 .post p {
     margin: 10px 0;
 }
+
+form.add-post {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.add-post input, .add-post textarea {
+    padding: 8px;
+}
+
+.add-post #submit {
+    padding: 8px;
+}
+
+.button {
+    display: block;
+    margin: auto;
+    padding: 12px;
+    width: 120px;
+    border-radius: 8px;
+    background-color: white;
+    text-align: center;
+    transition: all .4s ease;
+    text-decoration: none;
+    color: #444;
+    font-weight: 600;
+}
+
+.button:hover {
+    background-color: aqua;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4)
+}
