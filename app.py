@@ -1,12 +1,18 @@
 from flask import Flask, render_template, request, redirect
+import json
+import os
 
 app = Flask(__name__)
-blog_posts = []
+# blog_posts = []
+filename = os.path.join('storage', 'blog_posts.json')
+print(filename)
+with open(filename, 'r') as file:
+    blog_posts = json.loads(file.read())
+# blog_posts = []
 
 
 @app.route('/')
 def hello_world():
-
     return render_template('index.html', posts=blog_posts)
 
 
@@ -25,10 +31,17 @@ def add_post():
                      'title': title,
                      'content': post}
         blog_posts.append(post_dict)
-
         return redirect('/')
-
     return render_template('add.html')
+
+
+@app.route('/delete/<int:post_id>')
+def delete_post(post_id):
+    for post in blog_posts:
+        if post['id'] == post_id:
+            blog_posts.remove(post)
+            break
+    return redirect('/')
 
 
 if __name__ == '__main__':
