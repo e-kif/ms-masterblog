@@ -3,14 +3,10 @@ import json
 import os
 
 app = Flask(__name__)
-with open(os.path.join('storage', 'blog_posts.json'), 'r') as file:
-    blog_posts = json.loads(file.read())
 # blog_posts = []
-
-
-@app.route('/')
-def hello_world():
-    return render_template('index.html', posts=blog_posts)
+STORAGE_FILE = os.path.join('storage', 'blog_posts.json')
+with open(STORAGE_FILE, 'r') as file:
+    blog_posts = json.loads(file.read())
 
 
 def get_data_from_post_form():
@@ -18,6 +14,22 @@ def get_data_from_post_form():
     title = request.form.get('title')
     content = request.form.get('post')
     return author, title, content
+
+
+def fetch_post_by_id(post_id):
+    for post in blog_posts:
+        if post['id'] == post_id:
+            return post
+
+
+def update_storage_file():
+    with open(STORAGE_FILE, 'w') as handle:
+        handle.write(json.dumps(blog_posts))
+
+
+@app.route('/')
+def hello_world():
+    return render_template('index.html', posts=blog_posts)
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -33,20 +45,24 @@ def add_post():
                      'title': title,
                      'content': content}
         blog_posts.append(post_dict)
+        update_storage_file()
         return redirect('/')
     return render_template('add.html')
 
 
 @app.route('/delete/<int:post_id>')
 def delete_post(post_id):
-    for post in blog_posts:
-        if post['id'] == post_id:
-            blog_posts.remove(post)
-            return redirect('/')
+    blog_posts.remove(fetch_post_by_id(post_id))
+    update_storage_file()
+    return redirect('/')
 
 
 @app.route('/update/<int:post_id>', methods=['GET', 'POST'])
 def update_post(post_id):
+    post = fetch_post_by_id(post_id)
+    if post is None:
+        return "Post not found", 404
+
     if request.method == 'POST':
         author, title, content = get_data_from_post_form()
         for post in blog_posts:
@@ -54,11 +70,10 @@ def update_post(post_id):
                 post['author'] = author
                 post['title'] = title
                 post['content'] = content
+                update_storage_file()
                 return redirect('/')
 
-    for post in blog_posts:
-        if post['id'] == post_id:
-            return render_template('update.html', post=post)
+    return render_template('update.html', post=post)
 
 
 if __name__ == '__main__':
