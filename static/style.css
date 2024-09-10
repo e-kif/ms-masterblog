@@ -72,5 +72,13 @@ form.add-post {
 }
 
 .card .controls {
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.card .controls a {
     font-size: 1.2em;
+    text-decoration: none;
 }
