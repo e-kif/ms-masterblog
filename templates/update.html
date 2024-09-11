@@ -15,7 +15,7 @@
         <input type="hidden" id="post_id" name="post_id" value="{{ post.id }}">
         <input type="text" name="author" id="author" placeholder="Author" value="{{ post.author }}">
         <input type="text" name="title" id="title" placeholder="Post title" value="{{ post.title }}">
-        <textarea name="post" id="post" rows="20" placeholder="Post text">{{ post.content }}</textarea>
+        <textarea name="content" id="content" rows="20" placeholder="Post text">{{ post.content }}</textarea>
         <div class="likes">
             <input type="checkbox" id="likes" name="likes">
             <label for="likes">Reset likes count</label>

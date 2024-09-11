@@ -3,10 +3,11 @@ import json
 import os
 
 app = Flask(__name__)
-# blog_posts = []
-STORAGE_FILE = os.path.join('storage', 'blog_posts.json')
-with open(STORAGE_FILE, 'r') as file:
-    blog_posts = json.loads(file.read())
+
+
+def load_storage_file(filename):
+    with open(filename, 'r') as handle:
+        return json.loads(handle.read())
 
 
 def get_data_from_post_form():
@@ -21,7 +22,7 @@ def fetch_post_by_id(post_id):
 
 
 def update_storage_file():
-    with open(STORAGE_FILE, 'w') as handle:
+    with open(storage_file, 'w') as handle:
         handle.write(json.dumps(blog_posts))
 
 
@@ -41,7 +42,9 @@ def add_post():
         post_dict = {'id': post_id,
                      'author': author,
                      'title': title,
-                     'content': content}
+                     'content': content,
+                     'likes': 0,
+                     'dislikes': 0}
         blog_posts.append(post_dict)
         update_storage_file()
         return redirect('/')
@@ -90,4 +93,6 @@ def dislike_post(post_id):
 
 
 if __name__ == '__main__':
+    storage_file = os.path.join('storage', 'blog_posts.json')
+    blog_posts = load_storage_file(storage_file)
     app.run()
