@@ -10,10 +10,8 @@ with open(STORAGE_FILE, 'r') as file:
 
 
 def get_data_from_post_form():
-    author = request.form.get('author')
-    title = request.form.get('title')
-    content = request.form.get('post')
-    return author, title, content
+    fields = ['author', 'title', 'content', 'likes', 'dislikes']
+    return [request.form.get(field) for field in fields]
 
 
 def fetch_post_by_id(post_id):
@@ -35,7 +33,7 @@ def hello_world():
 @app.route('/add', methods=['GET', 'POST'])
 def add_post():
     if request.method == 'POST':
-        author, title, content = get_data_from_post_form()
+        author, title, content = tuple(list(get_data_from_post_form()[:3]))
         if not blog_posts:
             post_id = 1
         else:
@@ -62,18 +60,33 @@ def update_post(post_id):
     post = fetch_post_by_id(post_id)
     if post is None:
         return "Post not found", 404
-
     if request.method == 'POST':
-        author, title, content = get_data_from_post_form()
-        for post in blog_posts:
-            if post['id'] == post_id:
-                post['author'] = author
-                post['title'] = title
-                post['content'] = content
-                update_storage_file()
-                return redirect('/')
-
+        author, title, content, likes, dislikes = get_data_from_post_form()
+        post = fetch_post_by_id(post_id)
+        post['author'] = author
+        post['title'] = title
+        post['content'] = content
+        if likes:
+            post['likes'] = 0
+        if dislikes:
+            post['dislikes'] = 0
+        update_storage_file()
+        return redirect('/')
     return render_template('update.html', post=post)
+
+
+@app.route('/like/<int:post_id>')
+def like_post(post_id):
+    fetch_post_by_id(post_id)['likes'] += 1
+    update_storage_file()
+    return redirect('/')
+
+
+@app.route('/dislike/<int:post_id>')
+def dislike_post(post_id):
+    fetch_post_by_id(post_id)['dislikes'] += 1
+    update_storage_file()
+    return redirect('/')
 
 
 if __name__ == '__main__':

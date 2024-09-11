@@ -16,6 +16,14 @@
         <input type="text" name="author" id="author" placeholder="Author" value="{{ post.author }}">
         <input type="text" name="title" id="title" placeholder="Post title" value="{{ post.title }}">
         <textarea name="post" id="post" rows="20" placeholder="Post text">{{ post.content }}</textarea>
+        <div class="likes">
+            <input type="checkbox" id="likes" name="likes">
+            <label for="likes">Reset likes count</label>
+         </div>
+        <div class="likes">
+            <input type="checkbox" id="dislikes" name="dislikes">
+            <label for="dislikes">Reset dislikes count</label>
+         </div>
         <input type="submit" value="Update post" id="submit">
     </form>
 </div>
