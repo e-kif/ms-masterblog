@@ -106,4 +106,4 @@ if __name__ == '__main__':
     """Defines storage file, loads it as blog_posts dictionary and runs the app"""
     storage_file = os.path.join('storage', 'blog_posts.json')
     blog_posts = load_storage_file(storage_file)
-    app.run()
+    app.run(host="0.0.0.0", port=5000, debug=True)
